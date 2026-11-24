@@ -20,7 +20,7 @@ printf "%s\n" "$SQL" | docker compose exec -T postgres psql -U sql -d demo || tr
 
 echo ""
 echo "==================== MySQL ===================="
-printf "%s\n" "$SQL" | docker compose exec -T -e MYSQL_PWD=sql mysql mysql -u sql -t demo || true
+printf "%s\n" "$SQL" | docker compose exec -T -e MYSQL_PWD=sql mysql mysql -h 127.0.0.1 -u root -t demo || true
 
 echo ""
 echo "==================== SQLite ===================="

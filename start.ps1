@@ -44,7 +44,7 @@ try {
     }
 
     $pgCmd     = @("docker", "compose", "exec", "postgres", "psql", "-U", "sql", "-d", "demo")
-    $mysqlCmd  = @("docker", "compose", "exec", "-e", "MYSQL_PWD=sql", "mysql", "mysql", "-u", "sql", "demo")
+    $mysqlCmd  = @("docker", "compose", "exec", "-e", "MYSQL_PWD=sql", "mysql", "mysql", "-h", "127.0.0.1", "-u", "root", "demo")
     $sqliteCmd = @("docker", "compose", "exec", "sqlite", "sqlite3", "/data/demo.db")
 
     if ($Panes) {

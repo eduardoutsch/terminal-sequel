@@ -31,10 +31,10 @@ services:
       - ./init/mysql.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-psql"]
+      test: ["CMD-SHELL", "MYSQL_PWD=sql mysql -h 127.0.0.1 -u root -e 'SELECT 1 FROM demo.student LIMIT 1;' >/dev/null 2>&1"]
       interval: 2s
       timeout: 3s
-      retries: 20
+      retries: 30
 
   sqlite:
     image: alpine:3.20

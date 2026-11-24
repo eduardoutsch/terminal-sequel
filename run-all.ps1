@@ -44,7 +44,7 @@ try {
     }
 
     Invoke-Engine -Label "MySQL" -Color "Yellow" -Command {
-        docker compose exec -T -e MYSQL_PWD=sql mysql mysql -u sql -t demo
+        docker compose exec -T -e MYSQL_PWD=sql mysql mysql -h 127.0.0.1 -u root -t demo
     }
 
     Invoke-Engine -Label "SQLite" -Color "Green" -Command {

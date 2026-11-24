@@ -13,7 +13,7 @@ if command -v tmux >/dev/null 2>&1; then
   SESSION="sequel-demo"
   tmux kill-session -t "$SESSION" 2>/dev/null || true
   tmux new-session -d -s "$SESSION" -n "PostgreSQL" "docker compose exec postgres psql -U sql -d demo"
-  tmux new-window -t "$SESSION" -n "MySQL" "docker compose exec -e MYSQL_PWD=sql mysql mysql -u sql demo"
+  tmux new-window -t "$SESSION" -n "MySQL" "docker compose exec -e MYSQL_PWD=sql mysql mysql -h 127.0.0.1 -u root demo"
   tmux new-window -t "$SESSION" -n "SQLite" "docker compose exec sqlite sqlite3 /data/demo.db"
   tmux select-window -t "$SESSION:0"
   exec tmux attach-session -t "$SESSION"
