@@ -11,7 +11,13 @@ Run the exact same SQL across all three engines and observe their dialect, typin
 
 ## Quick Start
 
-From the `terminal/` directory in PowerShell:
+From the `terminal/` directory, double-click **`setup.bat`** (or run it from Command Prompt / PowerShell):
+
+```bat
+setup.bat
+```
+
+`setup.bat` checks prerequisites, starts Docker Desktop if needed, bypasses PowerShell execution policy restrictions, and runs `start.ps1`. You can also run `start.ps1` directly in PowerShell:
 
 ```powershell
 .\start.ps1
