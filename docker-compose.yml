@@ -1,0 +1,65 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: sequel-postgres
+    environment:
+      POSTGRES_USER: sql
+      POSTGRES_PASSWORD: sql
+      POSTGRES_DB: demo
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init/postgres.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sql -d demo"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+
+  mysql:
+    image: mysql:8.4
+    container_name: sequel-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: sql
+      MYSQL_DATABASE: demo
+      MYSQL_USER: sql
+      MYSQL_PASSWORD: sql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init/mysql.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-psql"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+
+  sqlite:
+    image: alpine:3.20
+    container_name: sequel-sqlite
+    volumes:
+      - ./init/sqlite.sql:/init.sql:ro
+      - sqlite_data:/data
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        apk add --no-cache sqlite >/dev/null
+        printf ".headers on\n.mode box\n.nullvalue NULL\n" > /root/.sqliterc
+        if [ ! -f /data/demo.db ]; then
+          sqlite3 /data/demo.db < /init.sql
+        fi
+        touch /tmp/ready
+        exec tail -f /dev/null
+    healthcheck:
+      test: ["CMD", "test", "-f", "/tmp/ready"]
+      interval: 1s
+      timeout: 2s
+      retries: 15
+
+volumes:
+  postgres_data:
+  mysql_data:
+  sqlite_data:
