@@ -49,24 +49,13 @@ if errorlevel 1 (
 
 where wt.exe >nul 2>&1
 if errorlevel 1 (
-    echo Windows Terminal not found. Attempting automatic installation via winget...
     where winget >nul 2>&1
-    if errorlevel 1 (
-        echo [ERROR] Neither Windows Terminal nor winget was found.
-        echo Please install Windows Terminal from the Microsoft Store.
-        echo.
-        pause
-        exit /b 1
-    )
-    winget install -e --id Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements
-    if errorlevel 1 (
-        echo [ERROR] Failed to install Windows Terminal via winget.
-        echo.
-        pause
-        exit /b 1
-    )
-    if exist "%LOCALAPPDATA%\Microsoft\WindowsApps\wt.exe" (
-        set "PATH=%LOCALAPPDATA%\Microsoft\WindowsApps;%PATH%"
+    if not errorlevel 1 (
+        echo Windows Terminal not found. Attempting automatic installation via winget...
+        winget install -e --id Microsoft.WindowsTerminal --accept-package-agreements --accept-source-agreements
+        if exist "%LOCALAPPDATA%\Microsoft\WindowsApps\wt.exe" (
+            set "PATH=%LOCALAPPDATA%\Microsoft\WindowsApps;%PATH%"
+        )
     )
 )
 
