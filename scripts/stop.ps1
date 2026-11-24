@@ -9,16 +9,11 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-Push-Location $PSScriptRoot
+. (Join-Path $PSScriptRoot "common.ps1")
 
-try {
-    if ($Reset) {
-        docker compose down -v
-    }
-    else {
-        docker compose down
-    }
+if ($Reset) {
+    Invoke-SequelCompose @("down", "-v")
 }
-finally {
-    Pop-Location
+else {
+    Invoke-SequelCompose @("down")
 }

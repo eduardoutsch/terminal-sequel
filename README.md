@@ -4,67 +4,59 @@ Three-engine SQL playground (**PostgreSQL**, **MySQL**, and **SQLite**) in tabbe
 
 Run the exact same SQL across all three engines and observe their dialect, typing, and execution peculiarities side by side.
 
-## Prerequisites
+## Structure
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (running)
-- [Windows Terminal](https://aka.ms/terminal) (`wt.exe`, included on Windows 11) — or `tmux` on Linux/macOS
+```text
+terminal-sequel/
+├── setup.bat             # One-click Windows launcher (auto-installs prerequisites)
+├── docker-compose.yml    # PostgreSQL 17, MySQL 8.4, and SQLite 3 containers
+├── scripts/
+│   ├── common.ps1        # Shared Docker Compose & engine definitions
+│   ├── start.ps1         # Opens 3-tab Windows Terminal (or cmd fallback)
+│   ├── stop.ps1          # Stops containers (add -Reset to wipe volumes)
+│   ├── run-all.ps1       # Runs a query or .sql file against all 3 engines
+│   ├── start.sh          # Linux / macOS tmux launcher
+│   └── run-all.sh        # Linux / macOS cross-engine runner
+├── init/                 # Shared student, course, and enrolled seed SQL
+└── examples/             # SQLite vs MySQL vs PostgreSQL peculiarity queries
+```
 
-## Quick Start
+## Quick Start (Windows)
 
-From the `terminal/` directory, double-click **`setup.bat`** (or run it from Command Prompt / PowerShell):
+Double-click **`setup.bat`** (or run it from Command Prompt / PowerShell):
 
 ```bat
 setup.bat
 ```
 
-`setup.bat` checks prerequisites, starts Docker Desktop if needed, bypasses PowerShell execution policy restrictions, and runs `start.ps1`. You can also run `start.ps1` directly in PowerShell:
-
-```powershell
-.\start.ps1
-```
-
-This starts the `postgres`, `mysql`, and `sqlite` containers (waiting until all three are healthy) and opens a single Windows Terminal window with three color-coded tabs:
-
-- **PostgreSQL** (`psql` connected to `demo`)
-- **MySQL** (`mysql` connected to `demo`)
-- **SQLite** (`sqlite3` connected to `/data/demo.db`)
+`setup.bat` installs Docker Desktop and Windows Terminal via `winget` if missing, starts Docker Desktop, and runs [`scripts/start.ps1`](./scripts/start.ps1).
 
 ### Switching Tabs Seamlessly
 
 - `Ctrl+Tab` / `Ctrl+Shift+Tab`: cycle through PostgreSQL → MySQL → SQLite
 - `Ctrl+Alt+1` / `Ctrl+Alt+2` / `Ctrl+Alt+3`: jump directly to a specific engine
 
-> Prefer 3 split panes in one view instead of tabs? Run `.\start.ps1 -Panes`.
+> Prefer 3 split panes in one view instead of tabs? Run `.\scripts\start.ps1 -Panes`.
 
 ### Run the Same Query on All 3 Engines at Once
 
 ```powershell
-.\run-all.ps1 -Query "SELECT 1 / 2;"
-.\run-all.ps1 -Query "SELECT 'hello ' || 'world';"
-.\run-all.ps1 -File .\examples\peculiarities.sql
+.\scripts\run-all.ps1 -Query "SELECT 1 / 2;"
+.\scripts\run-all.ps1 -Query "SELECT 'hello ' || 'world';"
+.\scripts\run-all.ps1 -File .\examples\peculiarities.sql
 ```
 
 ### Reset / Stop
 
 ```powershell
-.\start.ps1 -Reset   # Wipe volumes and re-seed from ./init/*.sql
-.\stop.ps1           # Stop containers (keep data)
-.\stop.ps1 -Reset    # Stop containers and remove volumes
+.\scripts\start.ps1 -Reset   # Wipe volumes and re-seed from ./init/*.sql
+.\scripts\stop.ps1           # Stop containers (keep data)
+.\scripts\stop.ps1 -Reset    # Stop containers and remove volumes
 ```
-
-## Pre-loaded Sample Schema
-
-All three engines are initialized with the same `student`, `course`, and `enrolled` tables from [`init/`](./init):
-
-- `student(sid, name, login, age, gpa)` — 5 rows (including a `NULL` `gpa`)
-- `course(cid, name)` — 3 rows
-- `enrolled(sid, cid, grade)` — 6 rows (including a `NULL` `grade`)
-
-See [`examples/peculiarities.sql`](./examples/peculiarities.sql) for ready-to-run queries highlighting differences in integer division, `||` concatenation, double quotes, `GROUP BY`, `NULL` sorting, `LIKE` case-sensitivity, and SQLite's flexible typing.
 
 ## Linux / macOS (`tmux`)
 
 ```bash
-./start.sh
-./run-all.sh "SELECT 1 / 2;"
+./scripts/start.sh
+./scripts/run-all.sh "SELECT 1 / 2;"
 ```

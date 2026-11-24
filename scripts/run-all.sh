@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 if [[ $# -eq 0 ]]; then
   echo "Usage: $0 \"SELECT 1 / 2;\" | $0 path/to/file.sql"

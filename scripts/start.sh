@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 if [[ "${1:-}" == "--reset" ]]; then
   docker compose down -v
@@ -20,6 +20,6 @@ if command -v tmux >/dev/null 2>&1; then
 else
   echo "Containers are up. Install tmux for tabbed switching, or attach manually:"
   echo "  docker compose exec postgres psql -U sql -d demo"
-  echo "  docker compose exec -e MYSQL_PWD=sql mysql mysql -u sql demo"
+  echo "  docker compose exec -e MYSQL_PWD=sql mysql mysql -h 127.0.0.1 -u root demo"
   echo "  docker compose exec sqlite sqlite3 /data/demo.db"
 fi
